@@ -16,7 +16,7 @@ func HandleRequests() {
 		AllowOrigins:     strings.Split(os.Getenv("CORS_ORIGINS"), ","),
 		AllowCredentials: true,
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		AllowHeaders:     []string{"*"},
 		ExposeHeaders:    []string{"Content-Length", "Authorization"},
 	}))
 	if err != nil {
