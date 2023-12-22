@@ -29,6 +29,9 @@ func FindUserByLogin(login string) (user models.User) {
 		Preload("Roles").
 		Joins("Profile").
 		Find(&user, "login = ?", login)
+	if err := database.DB.Preload("Roles").Error; err != nil {
+		panic(err.Error())
+	}
 	return
 }
 
