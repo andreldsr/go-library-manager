@@ -1,14 +1,24 @@
 package routes
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"go-library-manager/internal/controllers"
 	"go-library-manager/internal/middlewares"
+	"os"
+	"strings"
 )
 
 func HandleRequests() {
 	r := gin.Default()
 	err := r.SetTrustedProxies(nil)
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     strings.Split(os.Getenv("CORS_ORIGINS"), ","),
+		AllowCredentials: true,
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+	}))
 	if err != nil {
 		return
 	}
