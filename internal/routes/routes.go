@@ -7,6 +7,7 @@ import (
 	"go-library-manager/internal/middlewares"
 	"os"
 	"strings"
+	"time"
 )
 
 func HandleRequests() {
@@ -18,6 +19,7 @@ func HandleRequests() {
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"*"},
 		ExposeHeaders:    []string{"Content-Length", "Authorization"},
+		MaxAge:           12 * time.Hour,
 	}))
 	if err != nil {
 		return
