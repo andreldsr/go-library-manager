@@ -1,9 +1,11 @@
 package repository
 
 import (
+	"context"
 	"go-library-manager/internal/database"
 	"go-library-manager/internal/dtos"
 	"go-library-manager/internal/models"
+	"time"
 )
 
 func FindUserList(query string, pageNumber, pageSize int) dtos.Page[dtos.UserListDto] {
@@ -25,13 +27,13 @@ func CreateUser(user *models.User) {
 }
 
 func FindUserByLogin(login string) (user models.User) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
 	database.DB.
+		WithContext(ctx).
 		Preload("Roles").
 		Joins("Profile").
 		Find(&user, "login = ?", login)
-	if err := database.DB.Preload("Roles").Error; err != nil {
-		panic(err.Error())
-	}
 	return
 }
 
