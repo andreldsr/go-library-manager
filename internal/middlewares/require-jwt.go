@@ -18,7 +18,6 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 
 		tokenString = tokenString[7:] // Remove "Bearer " prefix
 
-		// Parse the token
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			secret := os.Getenv("TOKEN_SECRET")
 			return []byte(secret), nil

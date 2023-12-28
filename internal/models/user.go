@@ -7,8 +7,8 @@ type User struct {
 	Password  string  `json:"password,omitempty"`
 	Active    bool    `json:"active,omitempty"`
 	Profile   Profile `json:"profile"`
+	Roles     []Role  `json:"roles" gorm:"many2many:user_roles"`
 	ProfileId int
-	Roles     []Role `json:"roles" gorm:"many2many:user_roles"`
 }
 
 func (User) TableName() string {
