@@ -1,0 +1,24 @@
+meta {
+  name: Login
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{apiUrl}}/api/auth
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "admin",
+    "password": "cavalo2"
+  }
+}
+
+script:post-response {
+  var authorization = res.headers.authorization;
+  token = authorization.substring(7);
+  bru.setEnvVar("token",token);
+}
