@@ -12,7 +12,7 @@ COPY . ./
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./cmd/api
 
 # Stage 2: Final image with minimal dependencies
-FROM alpine
+FROM ubuntu
 
 # Copy the statically-linked Go binary from the builder stage
 COPY --from=builder /app/main /app/main
