@@ -1,11 +1,17 @@
 meta {
   name: Find Books
   type: http
-  seq: 1
+  seq: 3
 }
 
 get {
-  url: {{apiUrl}}/api/book/stats
+  url: {{apiUrl}}/api/book
   body: none
   auth: none
+}
+
+query {
+  page: 
+  size: 
+  ~query: 
 }
