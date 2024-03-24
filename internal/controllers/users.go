@@ -9,7 +9,7 @@ import (
 )
 
 func FindUserList(c *gin.Context) {
-	query := c.Param("name")
+	query := c.Query("name")
 	pageNumber := util.IntOrDefault(c.Query("page"), 0)
 	pageSize := util.IntOrDefault(c.Query("size"), 10)
 	c.JSON(200, services.FindUsersByName(query, pageNumber, pageSize))

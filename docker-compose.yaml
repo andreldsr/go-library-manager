@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  library-manager-db:
+    image: postgres
+    environment:
+      POSTGRES_USER: library-manager
+      POSTGRES_PASSWORD: library-manager
+      POSTGRES_DB: library-manager
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+volumes:
+  db-data:

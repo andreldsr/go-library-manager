@@ -42,7 +42,7 @@ func findUserListContent(query string, pageNumber, pageSize int, contentChan cha
 	database.DB.
 		Model(&models.User{}).
 		Joins("Profile").
-		Where(`"user".name ilike ?`, "%"+query+"%").
+		Where(`"user".id > 1 and "user".name ilike ?`, "%"+query+"%").
 		Limit(pageSize).
 		Offset(pageNumber * pageSize).
 		Select(`"user".id, "user".login, "user".name, "Profile".description`).
@@ -54,7 +54,7 @@ func findUserListContent(query string, pageNumber, pageSize int, contentChan cha
 func findUserListCount(query string, countChan chan int) (count int64) {
 	database.DB.
 		Model(&models.User{}).
-		Where(`"user".name ilike ?`, "%"+query+"%").
+		Where(`"user".id > 1 and "user".name ilike ?`, "%"+query+"%").
 		Count(&count)
 	countChan <- int(count)
 	return

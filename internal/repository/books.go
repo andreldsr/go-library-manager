@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"database/sql"
 	"go-library-manager/internal/database"
 	"go-library-manager/internal/dtos"
 	"go-library-manager/internal/models"
@@ -63,16 +64,18 @@ func GetStats() (stats dtos.BookStats) {
 }
 
 func findAllBooksCount(query string, countChan chan int) (count int) {
+	var term = "%" + query + "%"
+
 	database.DB.
 		Raw(`SELECT COUNT(DISTINCT b.id)
 				FROM book b 
 				LEFT JOIN publisher p on b.publisher_id = p.id
 				LEFT JOIN books_authors ba on b.id = ba.book_id
 				LEFT JOIN author a on a.id = ba.author_id
-				WHERE b.title ILIKE ?
-				OR p.name ILIKE ?
-				OR a.name ILIKE  ?`,
-			"%"+query+"%", "%"+query+"%", "%"+query+"%").
+				WHERE b.title ILIKE @term
+				OR p.name ILIKE @term
+				OR a.name ILIKE  @term`,
+			sql.Named("term", term)).
 		Scan(&count)
 	countChan <- count
 	return
@@ -93,13 +96,15 @@ func findAllBooksContent(query string, pageNumber, pageSize int, booksChan chan 
 				    LEFT JOIN lending l on b.lending_id = l.id
 				    LEFT JOIN books_authors ba ON b.id = ba.book_id
 					LEFT JOIN author a ON ba.author_id = a.id 
-				WHERE b.title ILIKE ?
-				      OR a.name ILIKE ?
-					  OR p.name ILIKE ?
+				WHERE b.title ILIKE @term
+				      OR a.name ILIKE @term
+					  OR p.name ILIKE @term
 				GROUP BY b.id, p.name, l.id
 				ORDER BY b.title
-				LIMIT ? OFFSET ?`,
-			"%"+query+"%", "%"+query+"%", "%"+query+"%", pageSize, pageNumber*pageSize).
+				LIMIT @pageSize OFFSET @offset`,
+			sql.Named("term", "%"+query+"%"),
+			sql.Named("pageSize", pageSize),
+			sql.Named("offset", pageNumber*pageSize)).
 		Scan(&results)
 	booksChan <- results
 	return results
