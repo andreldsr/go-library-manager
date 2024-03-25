@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"go-library-manager/internal/dtos"
 	"go-library-manager/internal/services"
@@ -11,7 +10,6 @@ import (
 
 func FindUserList(c *gin.Context) {
 	query := c.Query("name")
-	fmt.Sprint("Find user with query" + query)
 	pageNumber := util.IntOrDefault(c.Query("page"), 0)
 	pageSize := util.IntOrDefault(c.Query("size"), 10)
 	c.JSON(200, services.FindUsersByName(query, pageNumber, pageSize))
