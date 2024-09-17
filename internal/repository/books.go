@@ -87,6 +87,7 @@ func findAllBooksContent(query string, pageNumber, pageSize int, booksChan chan 
 		Raw(`SELECT 
     				DISTINCT b.id AS id, 
     			    b.title AS title, 
+    			    b.register_number,
     			    STRING_AGG(a.name, ', ') as authors_names, 
     			    p.name AS publisher_name, 
     			    l.id AS lending_id, 

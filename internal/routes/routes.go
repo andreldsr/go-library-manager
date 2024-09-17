@@ -26,14 +26,13 @@ func HandleRequests() {
 		MaxAge:           12 * time.Hour,
 	}))
 
+	r.GET("/api/book", controllers.FindAllBooks)
+	r.GET("/api/book/:id", controllers.FindBookById)
+	r.GET("/api/book/stats", controllers.GetBookStats)
 	r.POST("/api/auth", controllers.Login)
 	r.Use(middlewares.JWTAuthMiddleware())
 
 	r.POST("/api/auth/register", controllers.Register)
-
-	r.GET("/api/book", controllers.FindAllBooks)
-	r.GET("/api/book/:id", controllers.FindBookById)
-	r.GET("/api/book/stats", controllers.GetBookStats)
 
 	adminRoutes := r.Group("/api/admin")
 	adminRoutes.Use(middlewares.AdminMiddleware())

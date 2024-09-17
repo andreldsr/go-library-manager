@@ -3,6 +3,7 @@ package dtos
 type BookListDto struct {
 	Id                int    `json:"id"`
 	Title             string `json:"title"`
+	RegisterNumber    int    `json:"registerNumber"`
 	PublisherName     string `json:"publisherName" gorm:"references:publisher.name"`
 	AuthorsNames      string `json:"authorsNames"`
 	LendingId         int    `json:"lendingId,omitempty"`
