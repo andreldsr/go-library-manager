@@ -90,7 +90,8 @@ func findAllBooksContent(query string, pageNumber, pageSize int, booksChan chan 
     			    b.register_number,
     			    STRING_AGG(a.name, ', ') as authors_names, 
     			    p.name AS publisher_name, 
-    			    b.index AS cdd,
+    			    b.cdd AS cdd,
+    			    b.index AS index,
     			    l.id AS lending_id, 
     			    l.return_date AS lending_return_date 
 				FROM book b 

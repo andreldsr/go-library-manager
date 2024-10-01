@@ -5,6 +5,7 @@ type BookListDto struct {
 	Title             string `json:"title"`
 	RegisterNumber    int    `json:"registerNumber"`
 	CDD               string `json:"cdd"`
+	Index             string `json:"index"`
 	PublisherName     string `json:"publisherName" gorm:"references:publisher.name"`
 	AuthorsNames      string `json:"authorsNames"`
 	LendingId         int    `json:"lendingId,omitempty"`
