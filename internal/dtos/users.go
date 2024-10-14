@@ -13,9 +13,17 @@ type UserLoginDto struct {
 }
 
 type CreateUserDto struct {
-	Login       string `json:"login"`
-	Name        string `json:"name"`
-	Password    string `json:"password"`
-	Role        string `json:"role"`
-	Description string `json:"description"`
+	Login        string `json:"login"`
+	Name         string `json:"name"`
+	Password     string `json:"password"`
+	Role         string `json:"role"`
+	Document     string `json:"document"`
+	Description  string `json:"description"`
+	BirthDate    string `json:"birth_date"`
+	Class        string `json:"class"`
+	Shift        string `json:"shift"`
+	Address      string `json:"address"`
+	Number       string `json:"number"`
+	Neighborhood string `json:"neighborhood"`
+	Phone        string `json:"phone"`
 }

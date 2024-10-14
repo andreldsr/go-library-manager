@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type User struct {
 	ID        int     `json:"id" gorm:"primaryKey"`
 	Name      string  `json:"name,omitempty"`
@@ -16,10 +18,17 @@ func (User) TableName() string {
 }
 
 type Profile struct {
-	ID          int    `json:"id" gorm:"primaryKey"`
-	Name        string `json:"name,omitempty"`
-	Description string `json:"description,omitempty"`
-	Document    string `json:"document,omitempty"`
+	ID           int       `json:"id" gorm:"primaryKey"`
+	Name         string    `json:"name,omitempty"`
+	Description  string    `json:"description,omitempty"`
+	Document     string    `json:"document,omitempty"`
+	BirthDate    time.Time `json:"birth_date,omitempty"`
+	Class        string    `json:"class,omitempty"`
+	Shift        string    `json:"shift,omitempty"`
+	Address      string    `json:"address,omitempty"`
+	Number       string    `json:"number,omitempty"`
+	Neighborhood string    `json:"neighborhood,omitempty"`
+	Phone        string    `json:"phone,omitempty"`
 }
 
 func (Profile) TableName() string {

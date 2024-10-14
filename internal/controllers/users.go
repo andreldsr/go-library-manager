@@ -45,6 +45,9 @@ func Register(c *gin.Context) {
 		})
 		return
 	}
+	if dto.Login == "" {
+		dto.Login = dto.Document
+	}
 	err := services.CreateUser(dto)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
