@@ -1,5 +1,5 @@
 # Stage 1: Build the Go app
-FROM golang:1.19-alpine AS builder
+FROM golang:1.22-alpine AS builder
 RUN export GOPROXY=direct
 WORKDIR /app
 
