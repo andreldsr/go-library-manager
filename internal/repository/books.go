@@ -74,7 +74,8 @@ func findAllBooksCount(query string, countChan chan int) (count int) {
 				LEFT JOIN author a on a.id = ba.author_id
 				WHERE b.title ILIKE @term
 				OR p.name ILIKE @term
-				OR a.name ILIKE  @term`,
+				OR a.name ILIKE  @term
+				OR b.register_number = @term`,
 			sql.Named("term", term)).
 		Scan(&count)
 	countChan <- count
@@ -102,6 +103,7 @@ func findAllBooksContent(query string, pageNumber, pageSize int, booksChan chan 
 				WHERE b.title ILIKE @term
 				      OR a.name ILIKE @term
 					  OR p.name ILIKE @term
+					  OR b.register_number = @term
 				GROUP BY b.id, p.name, l.id
 				ORDER BY b.title
 				LIMIT @pageSize OFFSET @offset`,
