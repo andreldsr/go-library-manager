@@ -2,9 +2,11 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 	"go-library-manager/internal/database"
 	"go-library-manager/internal/dtos"
 	"go-library-manager/internal/models"
+	"strconv"
 	"time"
 )
 
@@ -65,7 +67,11 @@ func GetStats() (stats dtos.BookStats) {
 
 func findAllBooksCount(query string, countChan chan int) (count int) {
 	var term = "%" + query + "%"
-
+	var registerNumber, err = strconv.Atoi(query)
+	if err != nil {
+		fmt.Println(err)
+		registerNumber = 0
+	}
 	database.DB.
 		Raw(`SELECT COUNT(DISTINCT b.id)
 				FROM book b 
@@ -75,8 +81,9 @@ func findAllBooksCount(query string, countChan chan int) (count int) {
 				WHERE b.title ILIKE @term
 				OR p.name ILIKE @term
 				OR a.name ILIKE  @term
-				OR b.register_number = @term`,
-			sql.Named("term", term)).
+				OR b.register_number = @registerNumber`,
+			sql.Named("term", term),
+			sql.Named("registerNumber", registerNumber)).
 		Scan(&count)
 	countChan <- count
 	return
@@ -84,6 +91,11 @@ func findAllBooksCount(query string, countChan chan int) (count int) {
 
 func findAllBooksContent(query string, pageNumber, pageSize int, booksChan chan []dtos.BookListDto) []dtos.BookListDto {
 	var results []dtos.BookListDto
+	var registerNumber, err = strconv.Atoi(query)
+	if err != nil {
+		fmt.Println(err)
+		registerNumber = 0
+	}
 	database.DB.
 		Raw(`SELECT 
     				DISTINCT b.id AS id, 
@@ -103,11 +115,12 @@ func findAllBooksContent(query string, pageNumber, pageSize int, booksChan chan 
 				WHERE b.title ILIKE @term
 				      OR a.name ILIKE @term
 					  OR p.name ILIKE @term
-					  OR b.register_number = @term
+					  OR b.register_number = @registerNumber
 				GROUP BY b.id, p.name, l.id
 				ORDER BY b.title
 				LIMIT @pageSize OFFSET @offset`,
 			sql.Named("term", "%"+query+"%"),
+			sql.Named("registerNumber", registerNumber),
 			sql.Named("pageSize", pageSize),
 			sql.Named("offset", pageNumber*pageSize)).
 		Scan(&results)
