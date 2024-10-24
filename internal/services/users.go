@@ -28,11 +28,11 @@ func Login(dto dtos.UserLoginDto) (string, error) {
 }
 
 func CreateUser(dto dtos.CreateUserDto) (err error) {
-	alredyExists := repository.ExistsUserByLogin(dto.Login)
-	if alredyExists {
-		err = errors.New("user already exists")
-		return
-	}
+	//alredyExists := repository.ExistsUserByLogin(dto.Login)
+	//if alredyExists {
+	//	err = errors.New("user already exists")
+	//	return
+	//}
 	birthDate, err := time.Parse("2006-01-02", dto.BirthDate)
 	if err != nil {
 		fmt.Println(err.Error())
