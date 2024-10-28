@@ -1,10 +1,15 @@
 package dtos
 
+import "time"
+
 type UserListDto struct {
-	Id          int    `json:"id"`
-	Login       string `json:"login"`
-	Description string `json:"description"`
-	Name        string `json:"name"`
+	Id          int       `json:"id"`
+	Login       string    `json:"login"`
+	Description string    `json:"description"`
+	Name        string    `json:"name"`
+	BirthDate   time.Time `json:"birth_date,omitempty"`
+	Class       string    `json:"class"`
+	Shift       string    `json:"shift"`
 }
 
 type UserLoginDto struct {

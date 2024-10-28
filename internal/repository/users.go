@@ -45,7 +45,7 @@ func findUserListContent(query string, pageNumber, pageSize int, contentChan cha
 		Where(`"user".id > 1 and "user".name ilike ?`, "%"+query+"%").
 		Limit(pageSize).
 		Offset(pageNumber * pageSize).
-		Select(`"user".id, "user".login, "user".name, "Profile".description`).
+		Select(`"user".id, "user".login, "user".name, "Profile".description, "Profile".birth_date, "Profile".class, "Profile".shift`).
 		Scan(&result)
 	contentChan <- result
 	return
