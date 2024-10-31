@@ -15,6 +15,11 @@ func FindUserList(c *gin.Context) {
 	c.JSON(200, services.FindUsersByName(query, pageNumber, pageSize))
 }
 
+func FindUserById(c *gin.Context) {
+	id := util.IntOrDefault(c.Param("id"), 0)
+	c.JSON(200, services.FindUserById(id))
+}
+
 func Login(c *gin.Context) {
 	var dto dtos.UserLoginDto
 	err := c.ShouldBindJSON(&dto)
@@ -57,5 +62,26 @@ func Register(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "new user created",
+	})
+}
+
+func UpdateUser(context *gin.Context) {
+	id := util.IntOrDefault(context.Param("id"), 0)
+	var dto dtos.CreateUserDto
+	if err := context.ShouldBindJSON(&dto); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	err := services.UpdateUser(id, dto)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	context.JSON(http.StatusOK, gin.H{
+		"message": "user updated",
 	})
 }

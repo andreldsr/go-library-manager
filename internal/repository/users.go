@@ -32,9 +32,9 @@ func FindUserByLogin(login string) (user models.User) {
 	return
 }
 
-func ExistsUserByLogin(login string) bool {
+func ExistsUserById(id int) bool {
 	var count int64
-	database.DB.Model(&models.User{}).Where("login = ?", login).Count(&count)
+	database.DB.Model(&models.User{}).Where("id = ?", id).Count(&count)
 	return count > 0
 }
 
@@ -58,4 +58,25 @@ func findUserListCount(query string, countChan chan int) (count int64) {
 		Count(&count)
 	countChan <- int(count)
 	return
+}
+
+func FindUserById(id int) (user models.User) {
+	database.DB.Model(&models.User{}).Preload("Roles").Preload("Profile").First(&user, id)
+	user.Password = ""
+	return
+}
+
+func UpdateUser(m *models.User) {
+	database.DB.Model(&models.User{}).Where("id = ?", m.ID).Update("name", m.Name)
+	database.DB.Model(&models.Profile{}).Where("id = ?", m.Profile.ID).
+		Update("name", m.Profile.Name).
+		Update("description", m.Profile.Description).
+		Update("document", m.Profile.Document).
+		Update("birth_date", m.Profile.BirthDate).
+		Update("class", m.Profile.Class).
+		Update("shift", m.Profile.Shift).
+		Update("address", m.Profile.Address).
+		Update("number", m.Profile.Number).
+		Update("neighborhood", m.Profile.Neighborhood).
+		Update("phone", m.Profile.Phone)
 }

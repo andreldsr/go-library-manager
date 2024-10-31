@@ -14,6 +14,10 @@ func FindUsersByName(query string, pageNumber, pageSize int) dtos.Page[dtos.User
 	return repository.FindUserList(query, pageNumber, pageSize)
 }
 
+func FindUserById(id int) models.User {
+	return repository.FindUserById(id)
+}
+
 func Login(dto dtos.UserLoginDto) (string, error) {
 	user := repository.FindUserByLogin(dto.Username)
 	if user.ID == 0 {
@@ -72,4 +76,22 @@ func buildUser(dto dtos.CreateUserDto, roles []models.Role, birthDate time.Time)
 		Active: true,
 		Name:   dto.Name,
 	}
+}
+
+func UpdateUser(id int, dto dtos.CreateUserDto) (err error) {
+	birthDate, err := time.Parse("2006-01-02", dto.BirthDate)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	var user models.User
+	roles := repository.FindRolesByName([]string{dto.Role, "ROLE_USER"})
+	user = buildUser(dto, roles, birthDate)
+	user.ID = id
+	user.Profile.ID = id
+	if !repository.ExistsUserById(id) {
+		err = errors.New("user not found")
+	}
+	repository.UpdateUser(&user)
+	return
 }

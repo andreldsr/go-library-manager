@@ -47,5 +47,7 @@ func HandleRequests() {
 	adminRoutes.PATCH("/lending/:id/return", controllers.ReturnLending)
 
 	adminRoutes.GET("/user", controllers.FindUserList)
+	adminRoutes.GET("/user/:id", controllers.FindUserById)
+	adminRoutes.PUT("/user/:id", controllers.UpdateUser)
 	_ = r.Run()
 }
