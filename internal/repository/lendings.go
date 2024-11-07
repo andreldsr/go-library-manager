@@ -72,6 +72,7 @@ func findLendingsContent(pageNumber, pageSize int, scope func(db *gorm.DB) *gorm
 						"User".name user_name, 
 						"lending".return_date, 
 						"lending".returned_at`).
+		Order(`"User".name`).
 		Scan(&result)
 	contentChan <- result
 	return
