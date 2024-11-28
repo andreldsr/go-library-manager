@@ -32,7 +32,7 @@ func FindLendingDetailById(id int) (result dtos.LendingDetailDto) {
 		Joins("User").
 		Select(`"lending".id, "Book".title book_title, "Book".id book_id, "Book".copy book_copy,
 						"Book".location book_location, "Book".observation book_observation, "lending".returned_at,
-						"lending".return_date, "User".name user_name`).
+						"lending".return_date, "User".name user_name, "lending".created_at`).
 		Scan(&result)
 	return
 }
@@ -47,6 +47,10 @@ func FindAllLendingsDueToday(pageNumber, pageSize int) dtos.Page[dtos.LendingLis
 
 func FindAllLendingsOverdue(pageNumber, pageSize int) dtos.Page[dtos.LendingListDto] {
 	return findLendingsPage(pageNumber, pageSize, overdue())
+}
+
+func FindAllLendingsBetweenDate(startDate, endDate string, pageNumber, pageSize int) dtos.Page[dtos.LendingListDto] {
+	return findLendingsPage(pageNumber, pageSize, betweenDate(startDate, endDate))
 }
 
 func findLendingsPage(pageNumber, pageSize int, scope func(db *gorm.DB) *gorm.DB) dtos.Page[dtos.LendingListDto] {
@@ -71,7 +75,8 @@ func findLendingsContent(pageNumber, pageSize int, scope func(db *gorm.DB) *gorm
 						"Book".title book_title, 
 						"User".name user_name, 
 						"lending".return_date, 
-						"lending".returned_at`).
+						"lending".returned_at,
+						"lending".created_at`).
 		Order(`"User".name`).
 		Scan(&result)
 	contentChan <- result
@@ -103,5 +108,11 @@ func dueToday() func(db *gorm.DB) *gorm.DB {
 func overdue() func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		return db.Where("lending.return_date < ?", time.Now().Format("2006-01-02"))
+	}
+}
+
+func betweenDate(startDate, endDate string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		return db.Where("lending.return_date between ? and ?", startDate, endDate)
 	}
 }

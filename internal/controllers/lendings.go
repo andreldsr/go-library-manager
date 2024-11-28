@@ -23,6 +23,14 @@ func FindAllLendingsOverdue(c *gin.Context) {
 	c.JSON(200, services.FindAllLendingsOverdue(pageNumber, pageSize))
 }
 
+func FindAllLendingsBetweenDate(c *gin.Context) {
+	startDate := c.Query("startDate")
+	endDate := c.Query("endDate")
+	pageNumber := util.IntOrDefault(c.Query("page"), 0)
+	pageSize := util.IntOrDefault(c.Query("size"), 10)
+	c.JSON(200, services.FindAllLendingsBetweenDate(startDate, endDate, pageNumber, pageSize))
+}
+
 func FindLendingById(c *gin.Context) {
 	id := util.IntOrDefault(c.Param("id"), 0)
 	if id == 0 {

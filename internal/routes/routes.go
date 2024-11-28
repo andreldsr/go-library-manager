@@ -42,6 +42,7 @@ func HandleRequests() {
 	adminRoutes.GET("/lending/open", controllers.FindAllLendingsActive)
 	adminRoutes.GET("/lending/today", controllers.FindAllLendingsDueToday)
 	adminRoutes.GET("/lending/overdue", controllers.FindAllLendingsOverdue)
+	adminRoutes.GET("/lending/date", controllers.FindAllLendingsOverdue)
 	adminRoutes.GET("/lending/:id", controllers.FindLendingById)
 	adminRoutes.POST("/lending", controllers.CreateLending)
 	adminRoutes.PATCH("/lending/:id/return", controllers.ReturnLending)

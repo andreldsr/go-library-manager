@@ -21,6 +21,10 @@ func FindAllLendingsOverdue(pageNumber, pageSize int) dtos.Page[dtos.LendingList
 	return repository.FindAllLendingsOverdue(pageNumber, pageSize)
 }
 
+func FindAllLendingsBetweenDate(startDate, endDate string, pageNumber, pageSize int) dtos.Page[dtos.LendingListDto] {
+	return repository.FindAllLendingsBetweenDate(startDate, endDate, pageNumber, pageSize)
+}
+
 func FindLendingById(id int) dtos.LendingDetailDto {
 	return repository.FindLendingDetailById(id)
 }
