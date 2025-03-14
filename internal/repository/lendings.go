@@ -30,9 +30,10 @@ func FindLendingDetailById(id int) (result dtos.LendingDetailDto) {
 		Model(models.Lending{ID: id}).
 		Joins("Book").
 		Joins("User").
+		Joins("Profile").
 		Select(`"lending".id, "Book".title book_title, "Book".id book_id, "Book".copy book_copy,
 						"Book".location book_location, "Book".observation book_observation, "lending".returned_at,
-						"lending".return_date, "User".name user_name, "lending".created_at`).
+						"lending".return_date, "User".name user_name, "lending".created_at, "User__Profile".class user_class`).
 		Scan(&result)
 	return
 }
@@ -68,12 +69,14 @@ func findLendingsContent(pageNumber, pageSize int, scope func(db *gorm.DB) *gorm
 		Model(&models.Lending{}).
 		Joins("Book").
 		Joins("User").
+		Joins("User.Profile").
 		Where("returned_at is null").
 		Scopes(scope).
 		Select(`"lending".id id, 
 						"Book".id book_id, 
 						"Book".title book_title, 
-						"User".name user_name, 
+						"User".name user_name,
+						"User__Profile".class user_class, 
 						"lending".return_date, 
 						"lending".returned_at,
 						"lending".created_at`).

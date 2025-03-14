@@ -7,6 +7,7 @@ type LendingListDto struct {
 	BookId     int       `json:"bookId,omitempty"`
 	BookTitle  string    `json:"bookTitle,omitempty"`
 	UserName   string    `json:"userName,omitempty"`
+	UserClass  string    `json:"userClass,omitempty"`
 	ReturnDate time.Time `json:"returnDate"`
 	ReturnedAt time.Time `json:"returnedAt"`
 	CreatedAt  time.Time `json:"createdAt"`
@@ -21,6 +22,7 @@ type LendingDetailDto struct {
 	BookId          int       `json:"bookId"`
 	ReturnDate      string    `json:"returnDate"`
 	UserName        string    `json:"userName"`
+	UserClass       string    `json:"userClass"`
 	CreatedAt       time.Time `json:"createdAt"`
 }
 
