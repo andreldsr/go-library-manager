@@ -30,7 +30,7 @@ func FindLendingDetailById(id int) (result dtos.LendingDetailDto) {
 		Model(models.Lending{ID: id}).
 		Joins("Book").
 		Joins("User").
-		Joins("Profile").
+		Joins("User.Profile").
 		Select(`"lending".id, "Book".title book_title, "Book".id book_id, "Book".copy book_copy,
 						"Book".location book_location, "Book".observation book_observation, "lending".returned_at,
 						"lending".return_date, "User".name user_name, "lending".created_at, "User__Profile".class user_class`).
