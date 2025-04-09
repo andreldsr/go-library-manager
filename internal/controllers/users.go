@@ -85,3 +85,17 @@ func UpdateUser(context *gin.Context) {
 		"message": "user updated",
 	})
 }
+
+func DeleteUser(context *gin.Context) {
+	id := util.IntOrDefault(context.Param("id"), 0)
+	err := services.DeleteUser(id)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	context.JSON(http.StatusOK, gin.H{
+		"message": "user deleted",
+	})
+}

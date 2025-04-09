@@ -38,11 +38,12 @@ func HandleRequests() {
 	adminRoutes.Use(middlewares.AdminMiddleware())
 
 	adminRoutes.POST("/book", controllers.CreateBook)
+	adminRoutes.PUT("/book/:id", controllers.UpdateBook)
 
 	adminRoutes.GET("/lending/open", controllers.FindAllLendingsActive)
 	adminRoutes.GET("/lending/today", controllers.FindAllLendingsDueToday)
 	adminRoutes.GET("/lending/overdue", controllers.FindAllLendingsOverdue)
-	adminRoutes.GET("/lending/date", controllers.FindAllLendingsOverdue)
+	adminRoutes.GET("/lending/date", controllers.FindAllLendingsBetweenDate)
 	adminRoutes.GET("/lending/:id", controllers.FindLendingById)
 	adminRoutes.POST("/lending", controllers.CreateLending)
 	adminRoutes.PATCH("/lending/:id/return", controllers.ReturnLending)
@@ -50,5 +51,6 @@ func HandleRequests() {
 	adminRoutes.GET("/user", controllers.FindUserList)
 	adminRoutes.GET("/user/:id", controllers.FindUserById)
 	adminRoutes.PUT("/user/:id", controllers.UpdateUser)
+	adminRoutes.DELETE("/user/:id", controllers.DeleteUser)
 	_ = r.Run()
 }

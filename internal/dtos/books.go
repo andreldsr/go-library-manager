@@ -34,3 +34,18 @@ type CreateBookDto struct {
 	Cdd              string `json:"cdd"`
 	Observation      string `json:"observation"`
 }
+
+type UpdateBookDto struct {
+	RegisterNumber  *string `json:"registerNumber,omitempty"`
+	Authors         *string `json:"authors,omitempty"`
+	Title           *string `json:"title,omitempty"`
+	Volume          *string `json:"volume,omitempty"`
+	Copy            *string `json:"copy,omitempty"`
+	Location        *string `json:"location,omitempty"`
+	Publisher       *string `json:"publisher,omitempty"`
+	PublicationYear *int    `json:"publicationYear,omitempty"`
+	AcquisitionForm *string `json:"acquisitionForm,omitempty"`
+	Index           *string `json:"index,omitempty"`
+	Cdd             *string `json:"cdd,omitempty"`
+	Observation     *string `json:"observation,omitempty"`
+}

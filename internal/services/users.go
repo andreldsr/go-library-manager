@@ -32,11 +32,6 @@ func Login(dto dtos.UserLoginDto) (string, error) {
 }
 
 func CreateUser(dto dtos.CreateUserDto) (err error) {
-	//alredyExists := repository.ExistsUserByLogin(dto.Login)
-	//if alredyExists {
-	//	err = errors.New("user already exists")
-	//	return
-	//}
 	birthDate, err := time.Parse("2006-01-02", dto.BirthDate)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -78,20 +73,55 @@ func buildUser(dto dtos.CreateUserDto, roles []models.Role, birthDate time.Time)
 	}
 }
 
-func UpdateUser(id int, dto dtos.CreateUserDto) (err error) {
+// Custom error types
+var (
+	ErrUserNotFound = errors.New("user not found")
+	ErrInvalidDate  = errors.New("invalid birth date")
+)
+
+func UpdateUser(id int, dto dtos.CreateUserDto) error {
+	if id <= 0 {
+		return fmt.Errorf("%w: invalid id", ErrInvalidInput)
+	}
+
+	existingUser := repository.FindUserById(id)
+	if existingUser.ID == 0 {
+		return ErrUserNotFound
+	}
+
 	birthDate, err := time.Parse("2006-01-02", dto.BirthDate)
 	if err != nil {
-		fmt.Println(err.Error())
-		return
+		return fmt.Errorf("%w: %v", ErrInvalidDate, err)
 	}
-	var user models.User
+
 	roles := repository.FindRolesByName([]string{dto.Role, "ROLE_USER"})
-	user = buildUser(dto, roles, birthDate)
+	if len(roles) == 0 {
+		return fmt.Errorf("%w: invalid role", ErrInvalidInput)
+	}
+
+	user := buildUser(dto, roles, birthDate)
 	user.ID = id
 	user.Profile.ID = id
-	if !repository.ExistsUserById(id) {
-		err = errors.New("user not found")
+
+	if err := repository.UpdateUserTx(&user); err != nil {
+		return fmt.Errorf("failed to update user: %w", err)
 	}
-	repository.UpdateUser(&user)
-	return
+
+	return nil
+}
+
+func DeleteUser(id int) error {
+	if id <= 0 {
+		return fmt.Errorf("%w: invalid id", ErrInvalidInput)
+	}
+
+	existingUser := repository.FindUserById(id)
+	if existingUser.ID == 0 {
+		return ErrUserNotFound
+	}
+	existingUser.Active = false
+	if err := repository.UpdateUserTx(&existingUser); err != nil {
+		return fmt.Errorf("failed to delete user: %w", err)
+	}
+	return nil
 }

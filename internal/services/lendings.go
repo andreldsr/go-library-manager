@@ -62,6 +62,9 @@ func CreateLending(dto dtos.CreateLendingDto) models.Lending {
 	}
 	repository.CreateLending(&lending)
 	book.LendingId = lending.ID
-	repository.UpdateBook(book)
+	err = repository.UpdateBookTx(book)
+	if err != nil {
+		return models.Lending{}
+	}
 	return lending
 }

@@ -1,9 +1,11 @@
 package repository
 
 import (
+	"fmt"
 	"go-library-manager/internal/database"
 	"go-library-manager/internal/dtos"
 	"go-library-manager/internal/models"
+	"gorm.io/gorm"
 )
 
 func FindUserList(query string, pageNumber, pageSize int) dtos.Page[dtos.UserListDto] {
@@ -42,7 +44,7 @@ func findUserListContent(query string, pageNumber, pageSize int, contentChan cha
 	database.DB.
 		Model(&models.User{}).
 		Joins("Profile").
-		Where(`"user".id > 1 and "user".name ilike ?`, "%"+query+"%").
+		Where(`"user".id > 1 and "user".active is true and "user".name ilike ?`, "%"+query+"%").
 		Limit(pageSize).
 		Offset(pageNumber * pageSize).
 		Select(`"user".id, "user".login, "user".name, "Profile".description, "Profile".birth_date, "Profile".class, "Profile".shift`).
@@ -54,7 +56,7 @@ func findUserListContent(query string, pageNumber, pageSize int, contentChan cha
 func findUserListCount(query string, countChan chan int) (count int64) {
 	database.DB.
 		Model(&models.User{}).
-		Where(`"user".id > 1 and "user".name ilike ?`, "%"+query+"%").
+		Where(`"user".id > 1 and "user".active is true and "user".name ilike ?`, "%"+query+"%").
 		Count(&count)
 	countChan <- int(count)
 	return
@@ -79,4 +81,20 @@ func UpdateUser(m *models.User) {
 		Update("number", m.Profile.Number).
 		Update("neighborhood", m.Profile.Neighborhood).
 		Update("phone", m.Profile.Phone)
+}
+
+func UpdateUserTx(user *models.User) error {
+	return database.DB.Transaction(func(tx *gorm.DB) error {
+		// Update user and profile in a single transaction
+		if err := tx.Session(&gorm.Session{FullSaveAssociations: true}).Save(user).Error; err != nil {
+			return fmt.Errorf("failed to update user: %w", err)
+		}
+
+		// Update roles association separately as it's a many-to-many relationship
+		if err := tx.Model(user).Association("Roles").Replace(user.Roles); err != nil {
+			return fmt.Errorf("failed to update roles: %w", err)
+		}
+
+		return nil
+	})
 }

@@ -6,6 +6,7 @@ import (
 	"go-library-manager/internal/database"
 	"go-library-manager/internal/dtos"
 	"go-library-manager/internal/models"
+	"gorm.io/gorm"
 	"strconv"
 	"time"
 )
@@ -18,8 +19,25 @@ func FindAllBooks(query string, pageNumber, pageSize int) dtos.Page[dtos.BookLis
 	return dtos.BuildPage(<-booksChan, <-countChan, pageNumber, pageSize)
 }
 
-func UpdateBook(book models.Book) {
-	database.DB.Save(&book)
+func UpdateBookTx(book models.Book) error {
+	return database.DB.Transaction(func(tx *gorm.DB) error {
+		// Update book
+		authors := book.Authors
+		if err := tx.Model(&book).Omit("Authors").Updates(book).Error; err != nil {
+			return err
+		}
+
+		if authors != nil {
+			if err := tx.Model(&book).Association("Authors").Clear(); err != nil {
+				return err
+			}
+			if err := tx.Model(&book).Association("Authors").Replace(authors); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
 }
 
 func ExistsByCode(code int) bool {
@@ -41,7 +59,7 @@ func RemoveLending(book models.Book, lending models.Lending) models.Book {
 }
 
 func FindBookById(id int) (book models.Book) {
-	database.DB.Joins("Publisher").Preload("Authors").Find(&book, id)
+	database.DB.Preload("Authors").Joins("Publisher").Find(&book, id)
 	return
 }
 
